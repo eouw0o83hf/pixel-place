@@ -17,6 +17,7 @@ using System.IO;
 using ImageProcessor;
 using ImageProcessor.Imaging;
 using ImageProcessor.Imaging.Filters.Photo;
+using pixel_place.Filters;
 
 namespace pixel_place
 {
@@ -74,22 +75,8 @@ namespace pixel_place
     {
         public static ImageFactory Rasterize(this ImageFactory factory)
         {
-            using(var bmp = new FastBitmap(factory.Image))
-            for (var i = 0; i < factory.Image.Height; ++i)
-            {
-                for (var j = 0; j < factory.Image.Width; ++j)
-                {
-                    var pixel = bmp.GetPixel(j, i);
-                    if (pixel.R + pixel.G + pixel.B > 350)
-                    {
-                        bmp.SetPixel(j, i, System.Drawing.Color.FromArgb(200, 255, 255));
-                    }
-                    else
-                    {
-                        bmp.SetPixel(j, i, System.Drawing.Color.FromArgb(255, 0, 0, 30));
-                    }
-                }
-            }
+            using (var bmp = new FastBitmap(factory.Image))
+                new PosterizationFilter().ApplyFilter(bmp);
             return factory;
         }
     }
