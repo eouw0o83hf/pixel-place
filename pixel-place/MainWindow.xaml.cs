@@ -26,8 +26,12 @@ namespace pixel_place
     /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
+        private readonly ICollection<IImageFilter> _filters;
+
+        public MainWindow(ICollection<IImageFilter> filters)
         {
+            _filters = filters;
+
             InitializeComponent();
         }
 
@@ -42,16 +46,18 @@ namespace pixel_place
 
             var imageBytes = File.ReadAllBytes(dialog.FileName);
             Image image;
-            using (var instream = new MemoryStream(imageBytes))
+            using (var factory = new ImageFactory())
             {
+                using (var instream = new MemoryStream(imageBytes))
+                {
+                    factory.Load(instream);
+                }
+
+                ApplyFilter<PosterizationFilter>(factory);
+
                 using (var outstream = new MemoryStream())
                 {
-                    using (var factory = new ImageFactory())
-                    {
-                        factory.Load(instream)
-                            .Rasterize()
-                            .Save(outstream);
-                    }
+                    factory.Save(outstream);
                     image = Image.FromStream(outstream);
                 }
             }
@@ -69,14 +75,15 @@ namespace pixel_place
 
             MainImage.Source = bmpSource;
         }
-    }
 
-    public static class ImageFactoryExtensions
-    {
-        public static ImageFactory Rasterize(this ImageFactory factory)
+        private ImageFactory ApplyFilter<T>(ImageFactory factory)
+            where T : IImageFilter
         {
+            var target = _filters.OfType<T>().Single();
             using (var bmp = new FastBitmap(factory.Image))
-                new PosterizationFilter().ApplyFilter(bmp);
+            {
+                target.ApplyFilter(bmp);
+            }
             return factory;
         }
     }

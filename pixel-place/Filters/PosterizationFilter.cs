@@ -16,7 +16,7 @@ namespace pixel_place.Filters
                 for (var j = 0; j < image.Width; ++j)
                 {
                     var pixel = image.GetPixel(j, i);
-                    if (pixel.R + pixel.G + pixel.B > 350)
+                    if (pixel.R + pixel.G + pixel.B > 300)
                     {
                         image.SetPixel(j, i, System.Drawing.Color.FromArgb(200, 255, 255));
                     }
