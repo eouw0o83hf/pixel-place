@@ -53,7 +53,7 @@ namespace pixel_place
                     factory.Load(instream);
                 }
 
-                ApplyFilter<PosterizationFilter>(factory);
+                ApplyFilter<BlurFilter>(factory);
 
                 using (var outstream = new MemoryStream())
                 {
