@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using Castle.MicroKernel.Registration;
 using Castle.MicroKernel.Resolvers.SpecializedResolvers;
 using Castle.MicroKernel.SubSystems.Configuration;
@@ -18,8 +19,12 @@ namespace pixel_place.Windsor
         {
             container.Kernel.Resolver.AddSubResolver(new CollectionResolver(container.Kernel));
 
+            container.Register(Component.For<MainWindow>()
+                                        .LifestyleSingleton());
+
             container.Register(Classes.FromThisAssembly()
                 .BasedOn<Window>()
+                .If(a => a != typeof(MainWindow))
                 .LifestyleTransient()
                 .WithServiceBase()
                 .WithServiceSelf());

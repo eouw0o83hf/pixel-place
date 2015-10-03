@@ -13,9 +13,10 @@
                     <MenuItem Header="_Save" />
                 </MenuItem>
             </Menu>
-            <StackPanel>
+            <WrapPanel>
+                <Canvas Height="200" Width="200" Name="CurvesCanvas" Background="Azure" />
                 <Image Height="80" Width="80" Name="MainImage" />
-            </StackPanel>
+            </WrapPanel>
         </DockPanel>
     </Grid>
 </Window>

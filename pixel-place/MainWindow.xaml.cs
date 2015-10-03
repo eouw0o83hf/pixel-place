@@ -24,15 +24,19 @@ namespace pixel_place
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         private readonly ICollection<IImageFilter> _filters;
+        private readonly CurvesHandler _curves;
 
         public MainWindow(ICollection<IImageFilter> filters)
         {
             _filters = filters;
 
             InitializeComponent();
+
+            _curves = new CurvesHandler(CurvesCanvas);
+            _curves.Init();
         }
 
         private void MenuItem_Open_Click(object sender, RoutedEventArgs e)
@@ -75,8 +79,8 @@ namespace pixel_place
 
             MainImage.Source = bmpSource;
         }
-
-        private ImageFactory ApplyFilter<T>(ImageFactory factory)
+        
+        private void ApplyFilter<T>(ImageFactory factory)
             where T : IImageFilter
         {
             var target = _filters.OfType<T>().Single();
@@ -84,7 +88,6 @@ namespace pixel_place
             {
                 target.ApplyFilter(bmp);
             }
-            return factory;
         }
     }
 }
