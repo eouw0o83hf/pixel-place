@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Shapes;
 using Brushes = System.Windows.Media.Brushes;
+using Point = System.Drawing.Point;
 
 namespace pixel_place
 {
@@ -29,7 +30,7 @@ namespace pixel_place
         private readonly ICollection<Line> _gridLines = new List<Line>();
         private const int GridSections = 4;
 
-        private readonly ICollection<Line> _curveLines = new List<Line>();
+        private readonly ICollection<UIElement> _curveComponents = new List<UIElement>();
 
         public void Init()
         {
@@ -69,11 +70,11 @@ namespace pixel_place
 
         private void RenderCurves()
         {
-            foreach (var c in _curveLines)
+            foreach (var c in _curveComponents)
             {
                 _canvas.Children.Remove(c);
             }
-            _curveLines.Clear();
+            _curveComponents.Clear();
 
             for (var i = 1; i < _points.Count; ++i)
             {
@@ -87,8 +88,25 @@ namespace pixel_place
                     Y2 = _canvas.Height - _points[i].Y
                 };
 
-                _curveLines.Add(component);
+                _curveComponents.Add(component);
                 _canvas.Children.Add(component);
+
+                var pointSize = 3;
+
+                var point = new Rectangle
+                {
+                    Width = pointSize,
+                    Height = pointSize,
+                    Fill = Brushes.DarkGray,
+                    Stroke = null
+                };
+
+                var pointOffset = pointSize / 2;
+
+                _curveComponents.Add(point);
+                _canvas.Children.Add(point);
+                Canvas.SetLeft(point, _points[i].X - pointOffset);
+                Canvas.SetBottom(point, _points[i].Y - pointOffset);
             }
         }
 
